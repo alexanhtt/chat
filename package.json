@@ -1,0 +1,12 @@
+{
+  "name": "anon-chat-3files",
+  "version": "1.0.0",
+  "description": "Anonymous user <-> admin chat (3-file version: server + html + package.json)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}

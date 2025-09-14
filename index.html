@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <title>Anon Chat (User ↔ Admin) — Dark</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <style>
+    :root{
+      --bg:#000000;
+      --panel:#0f0f10;
+      --muted:#9aa0a6;
+      --accent:#4aa3ff;
+      --admin:#8be28b;
+      --user:#7fb5ff;
+      --bubble-user:#071428;
+      --bubble-admin:#1b1b1b;
+      --input:#111217;
+      --danger:#ff6b6b;
+      --code-bg:#111213;
+      --white:#ffffff;
+    }
+
+    html,body{height:100%; margin:0; background:var(--bg); color:var(--white); font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; -webkit-font-smoothing:antialiased;}
+
+    .wrap{max-width:980px; margin:18px auto; padding:18px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.04); border-radius:12px; box-shadow:0 6px 24px rgba(0,0,0,0.6);}
+
+    h2{margin:0 0 12px 0; font-weight:600; color:var(--white);}
+
+    #choice{display:flex; gap:12px; margin-bottom:12px;}
+    button.btn {
+      background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.06);
+      color:var(--white);
+      padding:8px 12px;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:600;
+      transition:transform .08s ease, box-shadow .08s;
+    }
+    button.btn:hover{ transform:translateY(-1px); box-shadow:0 6px 18px rgba(0,0,0,0.6); }
+    button.btn:active{ transform:translateY(0); }
+
+    /* chat area */
+    #chat{border:1px solid rgba(255,255,255,0.04); height:340px; overflow:auto; padding:12px; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)); border-radius:8px;}
+    .sys{color:var(--muted); font-size:0.92em; margin:6px 0;}
+    .msg{margin:6px 0; max-width:78%; padding:8px 10px; border-radius:10px; line-height:1.3; font-size:0.98em; word-break:break-word;}
+    .me{ margin-left:auto; background:linear-gradient(180deg, rgba(74,163,255,0.12), rgba(74,163,255,0.06)); border:1px solid rgba(74,163,255,0.12); color:var(--user); }
+    .other{ margin-right:auto; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.04); color:var(--white); }
+
+    /* admin chat panel */
+    #adminPanel{margin-top:12px;}
+    #userList{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;}
+    #userList button{background:transparent; border:1px solid rgba(255,255,255,0.04); color:var(--muted); padding:6px 8px; border-radius:8px; cursor:pointer;}
+    #userList button:hover{ color:var(--white); border-color:rgba(74,163,255,0.14);}
+
+    /* inputs */
+    input[type="text"], input[type="password"], input, textarea {
+      background:var(--input); color:var(--white); border:1px solid rgba(255,255,255,0.06);
+      padding:8px 10px; border-radius:8px; outline:none; font-size:0.96em;
+    }
+    input::placeholder{ color:rgba(255,255,255,0.35); }
+    .row { display:flex; gap:8px; align-items:center; margin-top:10px; }
+
+    /* admin chat small pane */
+    #chatAdmin{height:300px; overflow:auto; border:1px solid rgba(255,255,255,0.04); padding:10px; border-radius:8px; background:transparent;}
+
+    /* code tag styling requested: white color */
+    code { color: var(--white); background: var(--code-bg); padding:2px 6px; border-radius:6px; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Ubuntu Mono", monospace; font-size:0.95em; border:1px solid rgba(255,255,255,0.04); }
+
+    /* responsive */
+    @media (max-width:640px){
+      .wrap{ margin:12px; padding:12px; }
+      #chat{height:260px;}
+      #chatAdmin{height:200px;}
+      .msg{max-width:92%;}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h2 style="font-family: Courier; color: greenyellow;">Anhtt</h2>
+
+    <div id="choice">
+      <button id="btnUser" class="btn">User</button>
+      <button id="btnAdmin" class="btn">Admin</button>
+    </div>
+
+    <div id="userPanel" style="display:none;">
+      <div id="chat" aria-live="polite"></div>
+      <div class="row">
+        <input id="msg" placeholder="Oge! Nói gì đê..." style="flex:1">
+        <button id="sendUser" class="btn">Send</button>
+      </div>
+      <div class="sys" id="myIp"></div>
+    </div>
+
+    <div id="adminLogin" style="display:none;">
+      <p style="margin:0 0 8px 0">Admin password: <input id="adminPw" type="password" style="margin-left:8px;"/></p>
+      <div class="row">
+        <button id="loginBtn" class="btn">Login</button>
+        <div class="sys" id="loginMsg"></div>
+      </div>
+    </div>
+
+    <div id="adminPanel" style="display:none;">
+      <h3 style="margin-top:14px; margin-bottom:6px;">Admin</h3>
+      <div><strong style="color:var(--muted)">Known users:</strong>
+        <div id="userList"></div>
+      </div>
+      <hr style="border:none; height:1px; background:rgba(255,255,255,0.03); margin:12px 0"/>
+      <div id="adminChat" style="display:none;">
+        <h4 style="margin:0 0 8px 0;">Chat with <span id="chatWith"></span></h4>
+        <div id="chatAdmin"></div>
+        <div class="row" style="margin-top:8px;">
+          <input id="adminMsg" placeholder="Type message..." style="flex:1"/>
+          <button id="sendAdmin" class="btn">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+let role=null, adminToken=null, targetIp=null;
+const chatEl = document.getElementById('chat');
+const chatAdminEl = document.getElementById('chatAdmin');
+
+function append(el, text, cls){
+  const d=document.createElement('div');
+  d.innerText = text;
+  d.className = cls ? ('msg '+cls) : 'msg';
+  el.appendChild(d);
+  el.scrollTop = el.scrollHeight;
+}
+
+async function loadUserHistory(){
+  const r = await fetch('/user/history?client_id=' + clientId);
+  const j = await r.json();
+  if(j.ok){
+    (j.history || []).forEach(m => {
+      const cls = m.sender === 'user' ? 'me' : 'other';
+      append(chatEl, `${m.sender} [${m.ts}]: ${m.message}`, cls);
+    });
+  }
+}
+
+document.getElementById('btnUser').onclick = async () => {
+  role='user';
+  document.getElementById('choice').style.display='none';
+  document.getElementById('userPanel').style.display='block';
+
+  // 🔥 GỌI API lấy lịch sử cũ trước
+  try {
+    const r = await fetch('/user/history');
+    const j = await r.json();
+    if (j.ok) {
+      j.history.forEach(m => {
+        const cls = m.sender === 'user' ? 'me' : 'other';
+        append(chatEl, `${m.sender} [${m.ts}]: ${m.message}`, cls);
+      });
+    }
+  } catch(e){ console.error('History load error', e); }
+
+  // sau đó mới mở SSE để nghe tin nhắn mới
+  const es = new EventSource('/events?role=user&client_id=' + clientId);
+  es.addEventListener('message', e => {
+    const d = JSON.parse(e.data);
+    const cls = d.sender==='user' ? 'me' : 'other';
+    append(chatEl, `${d.sender} [${d.ts}]: ${d.message}`, cls);
+  });
+  es.addEventListener('connect-info', e => {
+    const d = JSON.parse(e.data);
+    document.getElementById('myIp').innerText = 'Your apparent IP: ' + (d.ip || 'unknown');
+  });
+
+  append(chatEl, 'Chỉ Anhtt mới nhìn thấy đoạn chat này!', 'sys');
+};
+
+document.getElementById('sendUser').onclick = async () => {
+  const m = document.getElementById('msg').value||'';
+  if(!m) return;
+  await fetch('/message', { 
+    method:'POST', 
+    headers:{'Content-Type':'application/json'}, 
+    body: JSON.stringify({ role:'user', client_id: clientId, message: m })
+  });
+  document.getElementById('msg').value='';
+  append(chatEl, 'you: '+m, 'me');
+};
+
+document.getElementById('btnAdmin').onclick = () => {
+  role='admin';
+  document.getElementById('choice').style.display='none';
+  document.getElementById('adminLogin').style.display='block';
+};
+
+document.getElementById('loginBtn').onclick = async () => {
+  const pw = document.getElementById('adminPw').value || '';
+  const r = await fetch('/admin-login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ password: pw })});
+  const j = await r.json();
+  if (!j.ok) { document.getElementById('loginMsg').innerText = 'Login failed'; return; }
+  adminToken = j.token;
+  document.getElementById('adminLogin').style.display='none';
+  document.getElementById('adminPanel').style.display='block';
+  const es = new EventSource('/events?role=admin&token='+adminToken);
+  es.addEventListener('user-list', e => { const d=JSON.parse(e.data); populateUserList(d.users||[]); });
+  es.addEventListener('message', e => {
+    const d = JSON.parse(e.data);
+    if (d.user_ip === targetIp) {
+      const cls = d.sender==='admin' ? 'me' : 'other';
+      append(chatAdminEl, `${d.sender} [${d.ts}]: ${d.message}`, cls);
+    }
+    loadUsers();
+  });
+  es.addEventListener('presence', e => loadUsers());
+  loadUsers();
+};
+
+async function loadUsers(){
+  if(!adminToken) return;
+  const r = await fetch('/admin/users?token=' + adminToken);
+  const j = await r.json();
+  if (j.ok) populateUserList(j.users || []);
+}
+
+function populateUserList(users){
+  const ul = document.getElementById('userList');
+  ul.innerHTML = '';
+  users.forEach(ip => {
+    const b = document.createElement('button');
+    b.innerText = ip;
+    b.onclick = () => openAdminChat(ip);
+    ul.appendChild(b);
+  });
+}
+
+async function openAdminChat(ip){
+  targetIp = ip;
+  document.getElementById('adminChat').style.display = 'block';
+  document.getElementById('chatWith').innerText = ip;
+  chatAdminEl.innerHTML = '';
+  const r = await fetch('/admin/history?token=' + adminToken + '&user_ip=' + encodeURIComponent(ip));
+  const j = await r.json();
+  if (j.ok) (j.history||[]).forEach(m => {
+    const cls = m.sender === 'admin' ? 'me' : 'other';
+    append(chatAdminEl, `${m.sender} [${m.ts}]: ${m.message}`, cls);
+  });
+}
+
+document.getElementById('sendAdmin').onclick = async () => {
+  const m = document.getElementById('adminMsg').value || '';
+  if (!m || !targetIp) return;
+  await fetch('/message', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ role:'admin', token: adminToken, user_ip: targetIp, message: m })});
+  append(chatAdminEl, 'you: ' + m, 'me');
+  document.getElementById('adminMsg').value = '';
+};
+
+// 🔑 Sinh ID cho user và lưu vào localStorage
+let clientId = localStorage.getItem("clientId");
+if (!clientId) {
+  clientId = crypto.randomUUID();
+  localStorage.setItem("clientId", clientId);
+}
+</script>
+</body>
+</html>
