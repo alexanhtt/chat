@@ -22,8 +22,20 @@
 
     html,body{height:100%; margin:0; background:var(--bg); color:var(--white); font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; -webkit-font-smoothing:antialiased;}
     .wrap{max-width:980px; margin:18px auto; padding:18px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.04); border-radius:12px; box-shadow:0 6px 24px rgba(0,0,0,0.6);}
-    h2{margin:0 0 12px 0; font-weight:600; color:var(--white);}
-    #choice{display:flex; gap:12px; margin-bottom:12px;}
+    h2 {
+      margin: 0 0 12px 0;
+      font-weight: 600;
+      color: var(--white);
+      text-align: center; /* căn giữa chữ */
+    }
+
+    #choice {
+      display: flex;
+      flex-direction: column; /* xếp dọc */
+      align-items: center;    /* căn giữa */
+      gap: 12px;
+      margin-bottom: 12px;
+    }
     button.btn {
       background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
       border:1px solid rgba(255,255,255,0.06);
@@ -36,11 +48,49 @@
     }
     button.btn:hover{ transform:translateY(-1px); box-shadow:0 6px 18px rgba(0,0,0,0.6); }
     button.btn:active{ transform:translateY(0); }
+    #adminLogin {
+      text-align: center;
+    }
+    #adminLogin p {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #loginBtn {
+      margin: 0 auto;
+    }
+    #loginMsg {
+      margin-top: 6px;
+      text-align: center;
+    }
     #chat{border:1px solid rgba(255,255,255,0.04); height:340px; overflow:auto; padding:12px; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)); border-radius:8px;}
     .sys{color:var(--muted); font-size:0.92em; margin:6px 0;}
-    .msg{margin:6px 0; max-width:78%; padding:8px 10px; border-radius:10px; line-height:1.3; font-size:0.98em; word-break:break-word;}
-    .me{ margin-left:auto; background:linear-gradient(180deg, rgba(74,163,255,0.12), rgba(74,163,255,0.06)); border:1px solid rgba(74,163,255,0.12); color:var(--user); }
-    .other{ margin-right:auto; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.04); color:var(--white); }
+    .msg {
+      display: inline-block; /* để box ôm sát nội dung */
+      margin: 6px 0;
+      padding: 8px 12px;
+      border-radius: 10px;
+      line-height: 1.3;
+      font-size: 0.98em;
+      word-break: break-word;
+    }
+    .me {
+      margin-left: auto;
+      background: linear-gradient(180deg, rgba(74,163,255,0.12), rgba(74,163,255,0.06));
+      border: 1px solid rgba(74,163,255,0.12);
+      color: var(--user);
+    }
+    .other {
+      margin-right: auto;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.04);
+      color: var(--white);
+    }
+    #adminChat h4 {
+      text-align: center; /* căn giữa chữ */
+      font-weight: 600;
+      color: var(--white);
+    }
     #adminPanel{margin-top:12px;}
     #userList{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;}
     #userList button{background:transparent; border:1px solid rgba(255,255,255,0.04); color:var(--muted); padding:6px 8px; border-radius:8px; cursor:pointer;}
@@ -64,10 +114,16 @@
 <body>
   <div class="wrap">
     <h2 style="font-family: Courier; color: greenyellow;">Anhtt</h2>
+    <small style="display:block; text-align:center;">
+      <i><b>Lưu ý:</b> Lịch sử tin nhắn có thể mất nếu website tạm ngưng hoạt động.</i>
+    </small><hr>
 
     <div id="choice">
-      <button id="btnUser" class="btn">User</button>
-      <button id="btnAdmin" class="btn">Admin</button>
+      <div>Bạn là User hay Admin?</div>
+      <div>
+        <button id="btnUser" class="btn">User</button>
+        <button id="btnAdmin" class="btn">Admin</button>
+      </div>
     </div>
 
     <div id="userPanel" style="display:none;">
@@ -79,9 +135,12 @@
       <div class="sys" id="myIp"></div>
     </div>
 
-    <div id="adminLogin" style="display:none;">
-      <p style="margin:0 0 8px 0">Admin password: <input id="adminPw" type="password" style="margin-left:8px;"/></p>
-      <div class="row">
+    <div id="adminLogin" style="display:none; text-align:center;">
+      <p style="margin:0 0 12px 0">
+        Admin password:<br/>
+        <input id="adminPw" type="password" style="margin-top:8px; width:220px;"/>
+      </p>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
         <button id="loginBtn" class="btn">Login</button>
         <div class="sys" id="loginMsg"></div>
       </div>
@@ -94,7 +153,7 @@
       </div>
       <hr style="border:none; height:1px; background:rgba(255,255,255,0.03); margin:12px 0"/>
       <div id="adminChat" style="display:none;">
-        <h4 style="margin:0 0 8px 0;">Chat with <span id="chatWith"></span></h4>
+        <h4 style="margin:0 0 8px 0;"><span id="chatWith"></span></h4>
         <div id="chatAdmin"></div>
         <div class="row" style="margin-top:8px;">
           <input id="adminMsg" placeholder="Type message..." style="flex:1"/>
@@ -141,6 +200,8 @@ document.getElementById('btnUser').onclick = async () => {
   document.getElementById('choice').style.display='none';
   document.getElementById('userPanel').style.display='block';
 
+  append(chatEl, 'Chỉ Anhtt mới nhìn thấy đoạn chat này!', 'sys');
+
   try {
     await loadUserHistory();
   } catch(e){ console.error('History load error', e); }
@@ -151,8 +212,6 @@ document.getElementById('btnUser').onclick = async () => {
     const cls = d.sender==='user' ? 'me' : 'other';
     append(chatEl, `${d.sender} [${d.ts}]: ${d.message}`, cls);
   });
-
-  append(chatEl, 'Chỉ Anhtt mới nhìn thấy đoạn chat này!', 'sys');
 };
 
 document.getElementById('sendUser').onclick = async () => {
@@ -164,7 +223,6 @@ document.getElementById('sendUser').onclick = async () => {
     body: JSON.stringify({ role:'user', client_id: clientId, message: m })
   });
   document.getElementById('msg').value='';
-  append(chatEl, 'you: '+m, 'me');
 };
 
 document.getElementById('btnAdmin').onclick = () => {
@@ -231,7 +289,6 @@ document.getElementById('sendAdmin').onclick = async () => {
   const m = document.getElementById('adminMsg').value || '';
   if (!m || !targetUserId) return;
   await fetch('/message', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ role:'admin', token: adminToken, user_id: targetUserId, message: m })});
-  append(chatAdminEl, 'you: ' + m, 'me');
   document.getElementById('adminMsg').value = '';
 };
 </script>
