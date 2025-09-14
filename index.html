@@ -85,11 +85,12 @@
       word-break: break-word;
     }
     .sys {
-      text-align: center;        /* căn giữa nội dung trong div */
-      width: 100%;               /* cho nó chiếm hết chiều ngang box chat */
-      margin: 8px 0;             /* thêm khoảng cách trên/dưới */
-      color: #ccc;               /* màu xám nhẹ (tùy chỉnh) */
-      font-style: italic;        /* chữ nghiêng, tùy chọn */
+      display: flex;
+      justify-content: center; /* căn giữa ngang */
+      width: 100%;
+      margin: 8px 0;
+      color: #ccc;
+      font-style: italic;
     }
     /* Tin nhắn của chính mình (user hay admin) */
     .me {
@@ -197,13 +198,20 @@ const chatEl = document.getElementById('chat');
 const chatAdminEl = document.getElementById('chatAdmin');
 
 function append(el, text, cls){
-  const wrap = document.createElement('div');
-  wrap.style.display = 'flex';
-  const d = document.createElement('div');
-  d.innerText = text;
-  d.className = cls ? ('msg ' + cls) : 'msg';
-  wrap.appendChild(d);
-  el.appendChild(wrap);
+  if(cls === 'sys'){
+    const d = document.createElement('div');
+    d.innerText = text;
+    d.className = 'sys';
+    el.appendChild(d);
+  } else {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'flex';
+    const d = document.createElement('div');
+    d.innerText = text;
+    d.className = cls ? ('msg ' + cls) : 'msg';
+    wrap.appendChild(d);
+    el.appendChild(wrap);
+  }
   el.scrollTop = el.scrollHeight;
 }
 
