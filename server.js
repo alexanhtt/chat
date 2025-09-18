@@ -4,7 +4,7 @@ const path = require("path");
 const crypto = require("crypto");
 
 const PORT = process.env.PORT || 3000;
-const ADMIN_PASSWORD = "123456"; // đổi nếu muốn
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "1234567890"; // đổi nếu muốn
 
 let users = {};
 let adminClients = [];
@@ -71,17 +71,36 @@ const server = http.createServer((req,res)=>{
     req.on("end", ()=>{
       const data = JSON.parse(body||"{}");
       const ts = new Date().toLocaleTimeString();
-      if(data.role==="user"){
-        if(!messages[data.client_id]) messages[data.client_id]=[];
-        messages[data.client_id].push({ sender:"user", ts, message:data.message });
-        // gửi cho admin
-        adminClients.forEach(c => c.write(`event: message\ndata: ${JSON.stringify({sender:"user", ts, message:data.message, user_id:data.client_id})}\n\n`));
-      } else if(data.role==="admin"){
-        if(!messages[data.user_id]) messages[data.user_id]=[];
-        messages[data.user_id].push({ sender:"admin", ts, message:data.message });
-        // gửi cho user
-        (userClients[data.user_id]||[]).forEach(c => c.write(`event: message\ndata: ${JSON.stringify({sender:"admin", ts, message:data.message})}\n\n`));
+
+      if (data.role === "user") {
+        if (!messages[data.client_id]) messages[data.client_id] = [];
+        messages[data.client_id].push({ sender: "user", ts, message: data.message });
+
+        // gửi cho chính user
+        (userClients[data.client_id] || []).forEach(c =>
+          c.write(`event: message\ndata: ${JSON.stringify({sender:"user", ts, message:data.message})}\n\n`)
+        );
+
+        // gửi cho tất cả admin
+        (adminClients || []).forEach(c =>
+          c.write(`event: message\ndata: ${JSON.stringify({sender:"user", ts, message:data.message, user_id:data.client_id})}\n\n`)
+        );
+
+      } else if (data.role === "admin") {
+        if (!messages[data.user_id]) messages[data.user_id] = [];
+        messages[data.user_id].push({ sender: "admin", ts, message: data.message });
+
+        // gửi cho chính admin (nếu cần nhiều admin cũng nhận)
+        (adminClients || []).forEach(c =>
+          c.write(`event: message\ndata: ${JSON.stringify({sender:"admin", ts, message:data.message, user_id:data.user_id})}\n\n`)
+        );
+
+        // gửi cho user tương ứng
+        (userClients[data.user_id] || []).forEach(c =>
+          c.write(`event: message\ndata: ${JSON.stringify({sender:"admin", ts, message:data.message})}\n\n`)
+        );
       }
+
       res.writeHead(200, {"Content-Type":"application/json"});
       res.end(JSON.stringify({ok:true}));
     });
