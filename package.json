@@ -1,12 +1,10 @@
 {
-  "name": "anon-chat-3files",
+  "name": "anon-chat",
   "version": "1.0.0",
-  "description": "Anonymous user <-> admin chat (3-file version: server + html + package.json)",
+  "description": "Anonymous chat between User and Admin with SSE",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
-  "engines": {
-    "node": ">=14"
-  }
+  "dependencies": {}
 }
