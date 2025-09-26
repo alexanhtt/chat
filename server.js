@@ -1,4 +1,4 @@
-const https = require("https");
+const http = require("http");
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
@@ -23,7 +23,7 @@ function sendToTelegramIfNoAdmin(msg) {
       "Content-Length": Buffer.byteLength(data)
     }
   };
-  const req = https.request(opts, res => res.on("data", () => {}));
+  const req = http.request(opts, res => res.on("data", () => {}));
   req.on("error", e => console.error("Telegram error:", e));
   req.write(data);
   req.end();
@@ -41,14 +41,14 @@ function send(clients, event, data) {
   clients.forEach(c => c.write(msg));
 }
 
-https.createServer((req, res) => {
+http.createServer((req, res) => {
   if (req.url === "/" || req.url.startsWith("/index.html")) return serve(res, "index.html");
   if (req.url.startsWith("/style.css")) return serve(res, "style.css", "text/css");
   if (req.url.startsWith("/client.js")) return serve(res, "client.js", "application/javascript");
 
   // --- SSE ---
   if (req.url.startsWith("/events")) {
-    const url = new URL(req.url, `https://${req.headers.host}`);
+    const url = new URL(req.url, `http://${req.headers.host}`);
     const role = url.searchParams.get("role");
     res.writeHead(200, {
       "Content-Type": "text/event-stream",
@@ -97,7 +97,7 @@ https.createServer((req, res) => {
   }
 
   if (req.url.startsWith("/user/history")) {
-    const id = new URL(req.url, `https://${req.headers.host}`).searchParams.get("client_id");
+    const id = new URL(req.url, `http://${req.headers.host}`).searchParams.get("client_id");
     res.writeHead(200, { "Content-Type": "application/json" })
        .end(JSON.stringify({ ok: true, history: messages[id] || [] }));
     return;
@@ -126,11 +126,11 @@ https.createServer((req, res) => {
   }
 
   if (req.url.startsWith("/admin/history")) {
-    const id = new URL(req.url, `https://${req.headers.host}`).searchParams.get("user_id");
+    const id = new URL(req.url, `http://${req.headers.host}`).searchParams.get("user_id");
     res.writeHead(200, { "Content-Type": "application/json" })
        .end(JSON.stringify({ ok: true, history: messages[id] || [] }));
     return;
   }
 
   res.writeHead(404).end("Not found");
-}).listen(PORT, () => console.log("Server running on https://localhost:" + PORT));
+}).listen(PORT, () => console.log("Server running on http://localhost:" + PORT));
