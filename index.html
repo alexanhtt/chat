@@ -12,7 +12,7 @@
     <source src="https://prod-streaming-video-msn-com.akamaized.net/3f6ca508-598d-4cbd-a3e2-43deea7bc377/b60c553e-9f3f-4164-8850-700a9a73a899.mp4" type="video/mp4">
   </video>
 
-  <div class="wrap">
+  <div class="wrap" id="wrap">
     <h2>Anhtt</h2>
     <small style="display:block; text-align:center;">
       <i><b>Lưu ý:</b> Lịch sử tin nhắn có thể mất nếu website tạm ngưng hoạt động.</i>
@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    <div id="userPanel" style="display:none;">
+    <div id="userPanel" class="panel">
       <div id="chat" aria-live="polite"></div>
       <div class="row">
         <input id="msg" placeholder="Oge! Nói gì đê..." style="flex:1">
@@ -34,7 +34,7 @@
       </div>
     </div>
 
-    <div id="adminLogin" style="display:none; text-align:center;">
+    <div id="adminLogin" class="panel" style="text-align:center;">
       <p>Admin password:<br/>
         <input id="adminPw" type="password" style="margin-top:8px; width:220px;"/>
       </p>
@@ -44,7 +44,7 @@
       </div>
     </div>
 
-    <div id="adminPanel" style="display:none;">
+    <div id="adminPanel" class="panel">
       <h3>Admin</h3>
       <div><strong style="color:var(--muted)">Known users:</strong>
         <div id="userList"></div>
