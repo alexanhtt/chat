@@ -36,6 +36,22 @@ video { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) sca
              0 6px 24px rgba(0,0,0,.55);
 }
 
+.panel {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transform: translateY(20px);
+  transition: max-height 1s ease-out, 
+              opacity 1s ease-out, 
+              transform 1s ease-out;
+}
+
+.panel.show {
+  max-height: 1000px; /* đủ lớn để chứa nội dung */
+  opacity: 1;
+  transform: translateY(0);
+}
+
 canvas {
   display:block; position:fixed !important; top:0; left:0;
   width:100% !important; height:100% !important; z-index:0;
@@ -61,7 +77,14 @@ button.btn:active { transform:translateY(0); }
 .msg {
   display:inline-block; max-width:75%; margin:6px 0; padding:8px 12px;
   border-radius:10px; line-height:1.3; font-size:.95em; word-break:break-word;
+  opacity: 0; transform: translateY(10px);
+  animation: fadeInUp .4s forwards;
 }
+
+@keyframes fadeInUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .sys { display:flex; justify-content:center; width:100%; margin:8px 0; color:#ccc; font-style:italic; }
 .me {
   margin-left:auto;
@@ -74,16 +97,7 @@ button.btn:active { transform:translateY(0); }
   border:1px solid rgba(255,255,255,.04); color:var(--white);
 }
 
-#userList {
-  display: flex;
-  flex-direction: column; /* chuyển từ hàng ngang sang hàng dọc */
-  gap: 8px;
-  max-height: 200px; /* giới hạn chiều cao */
-  overflow-y: auto; /* cho phép cuộn dọc */
-  margin-top: 8px;
-  padding-right: 4px; /* tránh che mất nội dung khi có thanh cuộn */
-}
-
+#userList { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
 #userList button {
   background:transparent; border:1px solid rgba(255,255,255,.04); color:var(--muted);
   padding:6px 8px; border-radius:8px; cursor:pointer;
@@ -99,7 +113,7 @@ input::placeholder { color:rgba(255,255,255,.35); }
 .row { display:flex; gap:8px; align-items:center; margin-top:10px; }
 
 #chatAdmin {
-  height:230px; overflow:auto; border:1px solid rgba(255,255,255,.04);
+  height:200px; overflow:auto; border:1px solid rgba(255,255,255,.04);
   padding:10px; border-radius:8px; background:transparent;
 }
 
