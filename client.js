@@ -25,7 +25,7 @@ async function loadUserHistory(){
 document.getElementById('btnUser').onclick=async()=>{
   role='user';
   document.getElementById('choice').style.display='none';
-  document.getElementById('userPanel').style.display='block';
+  document.getElementById('userPanel').classList.add('show'); // chỉ cần class
   append(chatEl,'Chỉ Anhtt mới nhìn thấy đoạn chat này!','sys');
   await loadUserHistory();
   const es=new EventSource('/events?role=user&client_id='+clientId);
@@ -52,7 +52,7 @@ bindEnter("msg","sendUser");
 document.getElementById('btnAdmin').onclick=()=>{
   role='admin';
   document.getElementById('choice').style.display='none';
-  document.getElementById('adminLogin').style.display='block';
+  document.getElementById('adminLogin').classList.add('show'); // đúng panel
 };
 
 document.getElementById('loginBtn').onclick=async()=>{
@@ -61,8 +61,10 @@ document.getElementById('loginBtn').onclick=async()=>{
   const j=await r.json();
   if(!j.ok){ document.getElementById('loginMsg').innerText='Login failed'; return; }
   adminToken=j.token;
-  document.getElementById('adminLogin').style.display='none';
-  document.getElementById('adminPanel').style.display='block';
+  
+  // ẩn login, hiện panel bằng class
+  document.getElementById('adminLogin').classList.remove('show');
+  document.getElementById('adminPanel').classList.add('show');
 
   const es=new EventSource('/events?role=admin&token='+adminToken);
   es.addEventListener('message',e=>{
