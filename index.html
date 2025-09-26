@@ -2,29 +2,18 @@
 <html lang="vi">
 <head>
   <meta charset="utf-8">
-  <title>User ↔ Admin</title>
+  <title>chat</title>
+  <link rel="icon" href="anhtticon.png" type="image/x-icon">
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <link rel="stylesheet" href="style.css">
-  <!-- thêm thư viện three.js và vanta -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.birds.min.js"></script>
 </head>
 <body>
-  <script>
-    VANTA.BIRDS({
-      el: "body",          // áp hiệu ứng cho toàn bộ body
-      mouseControls: true,
-      touchControls: true,
-      gyroControls: false,
-      minHeight: 200.00,
-      minWidth: 200.00,
-      scale: 1.00,
-      scaleMobile: 1.00
-    })
-  </script>
+  <video autoplay muted loop>
+    <source src="https://prod-streaming-video-msn-com.akamaized.net/3f6ca508-598d-4cbd-a3e2-43deea7bc377/b60c553e-9f3f-4164-8850-700a9a73a899.mp4" type="video/mp4">
+  </video>
 
   <div class="wrap">
-    <h2 style="font-family: Courier; color: greenyellow;">Anhtt</h2>
+    <h2>Anhtt</h2>
     <small style="display:block; text-align:center;">
       <i><b>Lưu ý:</b> Lịch sử tin nhắn có thể mất nếu website tạm ngưng hoạt động.</i>
     </small><hr>
@@ -43,30 +32,28 @@
         <input id="msg" placeholder="Oge! Nói gì đê..." style="flex:1">
         <button id="sendUser" class="btn">Send</button>
       </div>
-      <div class="sys" id="myIp"></div>
     </div>
 
     <div id="adminLogin" style="display:none; text-align:center;">
-      <p style="margin:0 0 12px 0">
-        Admin password:<br/>
+      <p>Admin password:<br/>
         <input id="adminPw" type="password" style="margin-top:8px; width:220px;"/>
       </p>
-      <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+      <div>
         <button id="loginBtn" class="btn">Login</button>
         <div class="sys" id="loginMsg"></div>
       </div>
     </div>
 
     <div id="adminPanel" style="display:none;">
-      <h3 style="margin-top:14px; margin-bottom:6px;">Admin</h3>
+      <h3>Admin</h3>
       <div><strong style="color:var(--muted)">Known users:</strong>
         <div id="userList"></div>
       </div>
-      <hr style="border:none; height:1px; background:rgba(255,255,255,0.03); margin:12px 0"/>
+      <hr/>
       <div id="adminChat" style="display:none;">
-        <h4 style="margin:0 0 8px 0;"><span id="chatWith"></span></h4>
+        <h4><span id="chatWith"></span></h4>
         <div id="chatAdmin"></div>
-        <div class="row" style="margin-top:8px;">
+        <div class="row">
           <input id="adminMsg" placeholder="Type message..." style="flex:1"/>
           <button id="sendAdmin" class="btn">Send</button>
         </div>
