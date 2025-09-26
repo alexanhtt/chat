@@ -1,3 +1,4 @@
+const https = require("https");
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
@@ -23,7 +24,7 @@ function sendToTelegramIfNoAdmin(msg) {
       "Content-Length": Buffer.byteLength(data)
     }
   };
-  const req = http.request(opts, res => res.on("data", () => {}));
+  const req = https.request(opts, res => res.on("data", () => {}));
   req.on("error", e => console.error("Telegram error:", e));
   req.write(data);
   req.end();
