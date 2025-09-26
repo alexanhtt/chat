@@ -74,7 +74,16 @@ button.btn:active { transform:translateY(0); }
   border:1px solid rgba(255,255,255,.04); color:var(--white);
 }
 
-#userList { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+#userList {
+  display: flex;
+  flex-direction: column; /* chuyển từ hàng ngang sang hàng dọc */
+  gap: 8px;
+  max-height: 200px; /* giới hạn chiều cao */
+  overflow-y: auto; /* cho phép cuộn dọc */
+  margin-top: 8px;
+  padding-right: 4px; /* tránh che mất nội dung khi có thanh cuộn */
+}
+
 #userList button {
   background:transparent; border:1px solid rgba(255,255,255,.04); color:var(--muted);
   padding:6px 8px; border-radius:8px; cursor:pointer;
@@ -90,7 +99,7 @@ input::placeholder { color:rgba(255,255,255,.35); }
 .row { display:flex; gap:8px; align-items:center; margin-top:10px; }
 
 #chatAdmin {
-  height:300px; overflow:auto; border:1px solid rgba(255,255,255,.04);
+  height:230px; overflow:auto; border:1px solid rgba(255,255,255,.04);
   padding:10px; border-radius:8px; background:transparent;
 }
 
